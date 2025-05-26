@@ -1,44 +1,43 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Este é o titulo</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Meu Quarto Virtual</title>
+    <!-- CSS desativado por padrão -->
+    <link rel="stylesheet" href="style.css" id="main-css" disabled>
 </head>
-
 <body>
-    <h1>Este é o Quarto</h1>
+    <noscript>
+        <div style="background: #ff6b6b; color: white; padding: 10px; text-align: center;">
+            ⚠️ JavaScript está desabilitado - os botões não funcionarão! ⚠️
+        </div>
+    </noscript>
+
+    <div id="css-warning" class="no-css-warning">
+        ⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️
+    </div>
+
+    <h1>Este é o meu quarto virtual</h1>
     <ul>
-        <li class="cama" data-original="cama (li)">
-            cama (li)
-        </li>
-
-        <li class="guarda-roupa" data-original="guarda-roupa (li)">
-            guarda-roupa (li)
-        </li>
-
-        <li class="armario" data-original="armario (li)">
-            armario (li)
-        </li>
+        <li class="cama" data-original="cama (li)">cama (li)</li>
+        <li class="guarda-roupa" data-original="guarda-roupa (li)">guarda-roupa (li)</li>
+        <li class="armario" data-original="armario (li)">armario (li)</li>
     </ul>
 
     <div class="controls">
-        <button id="toggleCssBtn">🎨 Desativar CSS</button>
+        <button id="toggleCssBtn">🎨 Ativar CSS</button>
         <button id="converteBtn">🛒 Simular compra</button>
         <button id="resetBtn" style="display: none;">↩️ Voltar ao original</button>
     </div>
 
     <div class="explanation">
         <h2>💡 Explicação Educativa:</h2>
-        <p><strong>HTML:</strong> É a estrutura básica - como as paredes e divisões do seu quarto.</p>
-        <p><strong>CSS:</strong> É a decoração - cores, espaçamentos, sombras que deixam tudo bonito.</p>
-        <p><strong>JavaScript:</strong> É a funcionalidade - permite interação, como trocar o texto por emojis.</p>
-        <p><em>Teste desativar o CSS para ver como fica apenas com HTML!</em></p>
+        <p><strong>HTML:</strong> Estrutura do conteúdo.</p>
+        <p><strong>CSS:</strong> Aparência visual (está desativado inicialmente).</p>
+        <p><strong>JavaScript:</strong> Interações e animações.</p>
     </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>
