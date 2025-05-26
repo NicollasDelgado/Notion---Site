@@ -1,43 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Meu Quarto Virtual</title>
-    <!-- CSS desativado por padrão -->
-    <link rel="stylesheet" href="style.css" id="main-css" disabled>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meu Quarto Virtual</title>
+  <!-- CSS externo, desativado por padrão -->
+  <link rel="stylesheet" href="style.css" id="main-css" disabled>
 </head>
 <body>
-    <noscript>
-        <div style="background: #ff6b6b; color: white; padding: 10px; text-align: center;">
-            ⚠️ JavaScript está desabilitado - os botões não funcionarão! ⚠️
-        </div>
-    </noscript>
-
-    <div id="css-warning" class="no-css-warning">
-        ⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️
+  <noscript>
+    <div style="background: #ff6b6b; color: white; padding: 10px; text-align: center;">
+      ⚠️ JavaScript está desabilitado - os botões não funcionarão! ⚠️
     </div>
+  </noscript>
 
-    <h1>Este é o meu quarto virtual</h1>
-    <ul>
-        <li class="cama" data-original="cama (li)">cama (li)</li>
-        <li class="guarda-roupa" data-original="guarda-roupa (li)">guarda-roupa (li)</li>
-        <li class="armario" data-original="armario (li)">armario (li)</li>
-    </ul>
+  <div id="css-warning" class="no-css-warning">
+    ⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️
+  </div>
 
-    <div class="controls">
-        <button id="toggleCssBtn">🎨 Ativar CSS</button>
-        <button id="converteBtn">🛒 Simular compra</button>
-        <button id="resetBtn" style="display: none;">↩️ Voltar ao original</button>
-    </div>
+  <h1>Este é o meu quarto virtual</h1>
+  <ul>
+    <li class="cama" data-original="cama (li)">cama (li)</li>
+    <li class="guarda-roupa" data-original="guarda-roupa (li)">guarda-roupa (li)</li>
+    <li class="armario" data-original="armario (li)">armario (li)</li>
+  </ul>
 
-    <div class="explanation">
-        <h2>💡 Explicação Educativa:</h2>
-        <p><strong>HTML:</strong> Estrutura do conteúdo.</p>
-        <p><strong>CSS:</strong> Aparência visual (está desativado inicialmente).</p>
-        <p><strong>JavaScript:</strong> Interações e animações.</p>
-    </div>
+  <div class="controls">
+    <button id="toggleCssBtn" title="Ativar ou desativar o CSS">🎨 Ativar CSS</button>
+    <button id="converteBtn">🛒 Simular compra</button>
+    <button id="resetBtn" style="display: none;">↩️ Voltar ao original</button>
+  </div>
 
-    <script src="script.js"></script>
+  <div class="explanation">
+    <h2>💡 Explicação Educativa:</h2>
+    <p><strong>HTML:</strong> Estrutura do conteúdo.</p>
+    <p><strong>CSS:</strong> Aparência visual (está desativado inicialmente).</p>
+    <p><strong>JavaScript:</strong> Interações e animações.</p>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let cssEnabled = false;
+      let isConverted = false;
+
+      const emojiMap = {
+        'cama': '🛏️',
+        'guarda-roupa': '🚪',
+        'armario': '🗄️'
+      };
+
+      const styleTag = document.getElementById('main-css');
+      const toggleCssBtn = document.getElementById('toggleCssBtn');
+      const convertBtn = document.getElementById('converteBtn');
+      const resetBtn = document.getElementById('resetBtn');
+
+      function showCssWarning() {
+        if (!document.getElementById('css-warning')) {
+          const warningDiv = document.createElement('div');
+          warningDiv.id = 'css-warning';
+          warningDiv.className = 'no-css-warning';
+          warningDiv.textContent = '⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️';
+          document.body.insertBefore(warningDiv, document.body.firstChild);
+        }
+      }
+
+      function removeCssWarning() {
+        const warning = document.getElementById('css-warning');
+        if (warning) warning.remove();
+      }
+
+      function toggleCSS() {
+        cssEnabled = !cssEnabled;
+
+        if (cssEnabled) {
+          styleTag.disabled = false;
+          removeCssWarning();
+
+          document.body.classList.remove('css-activation');
+          void document.body.offsetWidth; // força reflow
+          document.body.classList.add('css-activation');
+
+          toggleCssBtn.textContent = '🎨 Desativar CSS';
+          toggleCssBtn.title = 'Desativar estilo visual (CSS)';
+        } else {
+          styleTag.disabled = true;
+          showCssWarning();
+
+          toggleCssBtn.textContent = '🎨 Ativar CSS';
+          toggleCssBtn.title = 'Ativar estilo visual (CSS)';
+        }
+      }
+
+      function convertToEmojis() {
+        if (isConverted) return;
+
+        const items = document.querySelectorAll('li');
+        convertBtn.disabled = true;
+
+        items.forEach((li, index) => {
+          setTimeout(() => {
+            li.classList.add('buying-animation');
+            setTimeout(() => {
+              const className = li.className.split(' ')[0];
+              const emoji = emojiMap[className];
+              if (emoji) {
+                li.textContent = emoji;
+                li.classList.remove('buying-animation');
+                li.classList.add('converted');
+              }
+            }, 600);
+          }, index * 200);
+        });
+
+        setTimeout(() => {
+          convertBtn.style.display = 'none';
+          resetBtn.style.display = 'inline-block';
+          isConverted = true;
+        }, items.length * 200 + 600);
+      }
+
+      function resetToOriginal() {
+        const items = document.querySelectorAll('li');
+        items.forEach(li => {
+          const original = li.getAttribute('data-original');
+          if (original) {
+            li.textContent = original;
+            li.classList.remove('converted', 'buying-animation');
+          }
+        });
+
+        convertBtn.style.display = 'inline-block';
+        convertBtn.disabled = false;
+        resetBtn.style.display = 'none';
+        isConverted = false;
+      }
+
+      toggleCssBtn.addEventListener('click', toggleCSS);
+      convertBtn.addEventListener('click', convertToEmojis);
+      resetBtn.addEventListener('click', resetToOriginal);
+    });
+  </script>
 </body>
 </html>
