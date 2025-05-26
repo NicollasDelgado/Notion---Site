@@ -1,111 +1,133 @@
 document.addEventListener("DOMContentLoaded", () => {
-  let cssEnabled = false;
-  let isConverted = false;
-
-  // Mapeamento dos emojis para cada item
   const emojiMap = {
     'cama': '🛏️',
     'guarda-roupa': '🚪',
-    'armario': '🗄️'
+    'armario': '🗄️',
+    'armário': '🗄️',
+    'sapato': '👞',
+    'chave': '🔑',
+    'livro': '📚',
+    'mesa': '🪑'
   };
 
-  // Referências aos elementos do DOM
-  const styleTag = document.getElementById('main-css'); // corrigido aqui
+  const styleTag = document.getElementById('main-css');
   const toggleCssBtn = document.getElementById('toggleCssBtn');
   const convertBtn = document.getElementById('converteBtn');
   const resetBtn = document.getElementById('resetBtn');
+  const addItemBtn = document.getElementById('addItemBtn');
+  const newItemInput = document.getElementById('newItemInput');
+  const itemList = document.getElementById('itemList');
 
-  // Função para mostrar aviso de CSS desativado
-  function cssdesabilitado() {
-    if (!document.getElementById('css-warning')) {
-      const warningDiv = document.createElement('div');
-      warningDiv.id = 'css-warning';
-      warningDiv.className = 'no-css-warning';
-      warningDiv.textContent = '⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️';
-      document.body.insertBefore(warningDiv, document.body.firstChild);
-    }
-  }
+  let cssEnabled = true;
 
-  // Remove aviso de CSS desativado
-  function removeCssWarning() {
-    const warning = document.getElementById('css-warning');
-    if (warning) warning.remove();
-  }
-
-  // Alterna ativação/desativação do CSS
   function toggleCSS() {
     cssEnabled = !cssEnabled;
+    styleTag.disabled = !cssEnabled;
+    toggleCssBtn.textContent = cssEnabled ? '🎨 Desativar CSS' : '🎨 Ativar CSS';
+  }
 
-    if (cssEnabled) {
-      styleTag.disabled = false;
+  function updateButtonsState() {
+    convertBtn.disabled = false;
+    resetBtn.disabled = false;
+  }
 
-      removeCssWarning();
-      // Reinicia animação CSS
-      document.body.classList.remove('css-activation');
-      void document.body.offsetWidth; // Força reflow para reiniciar animação
-      document.body.classList.add('css-activation');
+  function createListItem(text) {
+    const li = document.createElement('li');
+    li.setAttribute('data-original', text);
+    li.setAttribute('data-converted', 'false');
 
-      toggleCssBtn.textContent = '🚫 Desativar CSS';
-      toggleCssBtn.title = 'Desativar estilo visual (CSS)';
-    } else {
-      styleTag.disabled = true;
-      cssdesabilitado();
+    const label = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'item-checkbox';
+    checkbox.addEventListener('change', updateButtonsState);
 
-      toggleCssBtn.textContent = '🎨 Ativar CSS';
-      toggleCssBtn.title = 'Ativar estilo visual (CSS)';
+    label.appendChild(checkbox);
+    label.appendChild(document.createTextNode(' ' + text));
+    li.appendChild(label);
+
+    return li;
+  }
+
+  function addItem() {
+    const text = newItemInput.value.trim();
+    if (!text) {
+      alert('Por favor, digite o nome do item.');
+      return;
+    }
+    const li = createListItem(text);
+    itemList.appendChild(li);
+    newItemInput.value = '';
+    updateButtonsState();
+  }
+
+  function convertItemToEmoji(li) {
+    return new Promise(resolve => {
+      const originalText = li.getAttribute('data-original');
+      const lowerText = originalText.toLowerCase();
+      const emoji = emojiMap[lowerText];
+
+      li.innerHTML = emoji || originalText;
+      li.setAttribute('data-converted', 'true');
+      resolve();
+    });
+  }
+
+  function restoreItemFromEmoji(li) {
+    return new Promise(resolve => {
+      const originalText = li.getAttribute('data-original');
+      li.innerHTML = '';
+
+      const label = document.createElement('label');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'item-checkbox';
+      checkbox.addEventListener('change', updateButtonsState);
+
+      label.appendChild(checkbox);
+      label.appendChild(document.createTextNode(' ' + originalText));
+      li.appendChild(label);
+
+      li.setAttribute('data-converted', 'false');
+      resolve();
+    });
+  }
+
+  async function buyItems() {
+    const selected = Array.from(itemList.querySelectorAll('.item-checkbox:checked')).map(cb => cb.closest('li'));
+    const targets = selected.length > 0
+      ? selected.filter(li => li.getAttribute('data-converted') === 'false')
+      : Array.from(itemList.children).filter(li => li.getAttribute('data-converted') === 'false');
+
+    for (const li of targets) {
+      await convertItemToEmoji(li);
     }
   }
 
-  // Converte itens da lista para emojis com animação
-  function convertToEmojis() {
-    if (isConverted) return;
+  async function sellItems() {
+    const selected = Array.from(itemList.querySelectorAll('.item-checkbox:checked')).map(cb => cb.closest('li'));
+    const targets = selected.length > 0
+      ? selected.filter(li => li.getAttribute('data-converted') === 'true')
+      : Array.from(itemList.children).filter(li => li.getAttribute('data-converted') === 'true');
 
-    const items = document.querySelectorAll('li');
-    convertBtn.disabled = true;
-
-    items.forEach((li, index) => {
-      setTimeout(() => {
-        li.classList.add('buying-animation');
-
-        setTimeout(() => {
-          const className = li.className.split(' ')[0];
-          const emoji = emojiMap[className];
-          if (emoji) {
-            li.textContent = emoji;
-            li.classList.remove('buying-animation');
-            li.classList.add('converted');
-          }
-        }, 600);
-      }, index * 200);
-    });
-
-    setTimeout(() => {
-      convertBtn.style.display = 'none';
-      resetBtn.style.display = 'inline-block';
-      isConverted = true;
-    }, items.length * 200 + 600);
+    for (const li of targets) {
+      await restoreItemFromEmoji(li);
+    }
   }
 
-  // Restaura os itens para o texto original
-  function resetToOriginal() {
-    const items = document.querySelectorAll('li');
-
-    items.forEach(li => {
-      const original = li.getAttribute('data-original');
-      if (original) {
-        li.textContent = original;
-        li.classList.remove('converted', 'buying-animation');
-      }
-    });
-
-    convertBtn.style.display = 'inline-block';
-    convertBtn.disabled = false;
-    resetBtn.style.display = 'none';
-    isConverted = false;
-  }
-
-  // Adiciona os event listeners para os botões
+  // Event Listeners
   toggleCssBtn.addEventListener('click', toggleCSS);
-  convertBtn.addEventListener('click', convertToEmojis);
-  resetBtn.addEventListener('click', resetToOriginal);
+  convertBtn.addEventListener('click', buyItems);
+  resetBtn.addEventListener('click', sellItems);
+  addItemBtn.addEventListener('click', addItem);
+  newItemInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') addItem();
+  });
+  itemList.addEventListener('change', e => {
+    if (e.target.classList.contains('item-checkbox')) {
+      updateButtonsState();
+    }
+  });
+
+  toggleCSS();
 });
