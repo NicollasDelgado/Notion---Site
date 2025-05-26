@@ -1,72 +1,322 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Este é o Titulo</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Meu Quarto Virtual</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            transition: all 0.8s ease;
+        }
+        
+        .css-activation {
+            animation: cssActivation 1.5s ease-out;
+        }
+        
+        @keyframes cssActivation {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+                filter: blur(10px);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.05);
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        li:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .buying-animation {
+            animation: buyingPulse 0.6s ease-in-out;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bcf7f, #4d94ff);
+            background-size: 300% 300%;
+            animation: buyingPulse 0.6s ease-in-out, rainbow 2s linear infinite;
+        }
+        
+        @keyframes buyingPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1) rotate(2deg); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .converted {
+            font-size: 24px;
+            text-align: center;
+            animation: emojiPop 0.5s ease-out;
+        }
+        
+        @keyframes emojiPop {
+            0% { 
+                transform: scale(0) rotate(180deg);
+                opacity: 0;
+            }
+            70% { 
+                transform: scale(1.2) rotate(-10deg);
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .converted {
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .controls button {
+            margin: 0 10px;
+        }
+        
+        .explanation {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .explanation h2 {
+            margin-top: 0;
+            color: #fff;
+        }
+        
+        .explanation p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        
+        .no-css-warning {
+            background: #ff6b6b;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Este é o (h1), e imagine que este site seja seu quarto</h1>
+    <h1>Este é o meu quarto virtual</h1>
     <ul>
-        <li class="cama">
+        <li class="cama" data-original="cama (li)">
             cama (li)
         </li>
 
-        <li class="guarda-roupa">
+        <li class="guarda-roupa" data-original="guarda-roupa (li)">
             guarda-roupa (li)
         </li>
 
-        <li class="armario">
+        <li class="armario" data-original="armario (li)">
             armario (li)
         </li>
     </ul>
 
-    <!-- Botão para converter -->
-    <button id="converteBtn">Simular compra</button>
+    <div class="controls">
+        <button id="toggleCssBtn">🎨 Desativar CSS</button>
+        <button id="converteBtn">🛒 Simular compra</button>
+        <button id="resetBtn" style="display: none;">↩️ Voltar ao original</button>
+    </div>
+    
+    <div class="explanation">
+        <h2>💡 Explicação Educativa:</h2>
+        <p><strong>HTML:</strong> É a estrutura básica - como as paredes e divisões do seu quarto.</p>
+        <p><strong>CSS:</strong> É a decoração - cores, espaçamentos, sombras que deixam tudo bonito.</p>
+        <p><strong>JavaScript:</strong> É a funcionalidade - permite interação, como trocar o texto por emojis.</p>
+        <p><em>Teste desativar o CSS para ver como fica apenas com HTML!</em></p>
+    </div>
 </body>
 
 <script>
-  document.getElementById('converteBtn').addEventListener('click', () => {
-    const items = document.querySelectorAll('li');
-    items.forEach(li => {
-        switch (li.className) {
-            case 'cama':
-                li.textContent = '🛏️'; // símbolo para cama
-                break;
-            case 'guarda-roupa':
-                li.textContent = '🚪'; // símbolo para guarda-roupa
-                break;
-            case 'armario':
-                li.textContent = '🗄️'; // símbolo para armário
-                break;
-        }
+    let isConverted = false;
+    let cssEnabled = false; // Começa desabilitado
+    
+    // Mapear classes para emojis
+    const emojiMap = {
+        'cama': '🛏️',
+        'guarda-roupa': '🚪',
+        'armario': '🗄️'
+    };
+    
+    // Desabilitar CSS no início
+    window.addEventListener('DOMContentLoaded', function() {
+        const styleElements = document.querySelectorAll('style');
+        styleElements.forEach(style => {
+            style.disabled = true;
+        });
+        
+        // Adicionar aviso inicial
+        const warning = document.createElement('div');
+        warning.style.cssText = 'background: #ff6b6b; color: white; padding: 10px; text-align: center; font-weight: bold; margin: 10px 0;';
+        warning.id = 'css-warning';
+        warning.innerHTML = '⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️';
+        document.body.insertBefore(warning, document.body.firstChild);
+        
+        // Definir texto inicial do botão
+        document.getElementById('toggleCssBtn').textContent = '🎨 Ativar CSS';
     });
-});
-
-document.getElementById('converteBtn').addEventListener('click', () => {
-    if (event.key === 'click') {
-        desconverteBtn()
+    
+    // Função para alternar CSS
+    function toggleCSS() {
+        const styleElements = document.querySelectorAll('style');
+        const toggleBtn = document.getElementById('toggleCssBtn');
+        
+        if (!cssEnabled) {
+            // Habilitar CSS com animação
+            styleElements.forEach(style => {
+                style.disabled = false;
+            });
+            
+            // Adicionar classe de animação ao body
+            document.body.classList.add('css-activation');
+            
+            // Remover classe após animação
+            setTimeout(() => {
+                document.body.classList.remove('css-activation');
+            }, 1500);
+            
+            toggleBtn.textContent = '🎨 Desativar CSS';
+            
+            // Remover aviso
+            const warning = document.getElementById('css-warning');
+            if (warning) {
+                warning.remove();
+            }
+            
+            cssEnabled = true;
+        } else {
+            // Desabilitar CSS
+            styleElements.forEach(style => {
+                style.disabled = true;
+            });
+            toggleBtn.textContent = '🎨 Ativar CSS';
+            
+            // Adicionar aviso visual
+            const warning = document.createElement('div');
+            warning.style.cssText = 'background: #ff6b6b; color: white; padding: 10px; text-align: center; font-weight: bold; margin: 10px 0;';
+            warning.id = 'css-warning';
+            warning.innerHTML = '⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️';
+            document.body.insertBefore(warning, document.body.firstChild);
+            
+            cssEnabled = false;
+        }
     }
-});
-
-function desconverteBtn() {
-    const items = document.querySelectorAll('li');
-    items.forEach(li => {
-        switch (li.className) {
-            case '🛏️':
-                li.textContent = 'cama'; // símbolo para cama
-                break;
-            case 'guarda-roupa':
-                li.textContent = '🚪'; // símbolo para guarda-roupa
-                break;
-            case 'armario':
-                li.textContent = '🗄️'; // símbolo para armário
-                break;
-        }
-    });
-}
+    
+    // Função para converter para emojis com animação
+    function convertToEmojis() {
+        const items = document.querySelectorAll('li');
+        
+        items.forEach((li, index) => {
+            // Adicionar animação de compra primeiro
+            setTimeout(() => {
+                li.classList.add('buying-animation');
+                
+                // Após a animação de compra, converter para emoji
+                setTimeout(() => {
+                    const emoji = emojiMap[li.className.replace(' buying-animation', '')];
+                    if (emoji) {
+                        li.textContent = emoji;
+                        li.classList.remove('buying-animation');
+                        li.classList.add('converted');
+                    }
+                }, 600);
+            }, index * 200); // Delay sequencial para cada item
+        });
+        
+        // Trocar visibilidade dos botões após todas as animações
+        setTimeout(() => {
+            document.getElementById('converteBtn').style.display = 'none';
+            document.getElementById('resetBtn').style.display = 'inline-block';
+            isConverted = true;
+        }, items.length * 200 + 600);
+    }
+    
+    // Função para voltar ao texto original
+    function resetToOriginal() {
+        const items = document.querySelectorAll('li');
+        items.forEach(li => {
+            const originalText = li.getAttribute('data-original');
+            if (originalText) {
+                li.textContent = originalText;
+                li.classList.remove('converted', 'buying-animation');
+            }
+        });
+        
+        // Trocar visibilidade dos botões
+        document.getElementById('converteBtn').style.display = 'inline-block';
+        document.getElementById('resetBtn').style.display = 'none';
+        isConverted = false;
+    }
+    
+    // Event listeners
+    document.getElementById('toggleCssBtn').addEventListener('click', toggleCSS);
+    document.getElementById('converteBtn').addEventListener('click', convertToEmojis);
+    document.getElementById('resetBtn').addEventListener('click', resetToOriginal);
 </script>
 </html>
