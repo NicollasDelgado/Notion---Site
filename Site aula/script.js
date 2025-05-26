@@ -1,78 +1,111 @@
-let cssEnabled = false;
-let isConverted = false;
+document.addEventListener("DOMContentLoaded", () => {
+  let cssEnabled = false;
+  let isConverted = false;
 
-const emojiMap = {
+  // Mapeamento dos emojis para cada item
+  const emojiMap = {
     'cama': '🛏️',
     'guarda-roupa': '🚪',
     'armario': '🗄️'
-};
+  };
 
-function toggleCSS() {
-    const cssLink = document.getElementById('main-css');
-    const toggleBtn = document.getElementById('toggleCssBtn');
-    const warning = document.getElementById('css-warning');
+  // Referências aos elementos do DOM
+  const styleTag = document.getElementById('main-style');
+  const toggleCssBtn = document.getElementById('toggleCssBtn');
+  const convertBtn = document.getElementById('converteBtn');
+  const resetBtn = document.getElementById('resetBtn');
 
-    if (!cssEnabled) {
-        cssLink.disabled = false;
-        document.body.classList.add('css-activation');
-        if (warning) warning.remove();
-        toggleBtn.textContent = '🎨 Desativar CSS';
-        cssEnabled = true;
-    } else {
-        cssLink.disabled = true;
-
-        if (!document.getElementById('css-warning')) {
-            const warningDiv = document.createElement('div');
-            warningDiv.id = 'css-warning';
-            warningDiv.className = 'no-css-warning';
-            warningDiv.textContent = '⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️';
-            document.body.insertBefore(warningDiv, document.body.firstChild);
-        }
-
-        toggleBtn.textContent = '🎨 Ativar CSS';
-        cssEnabled = false;
+  // Função para mostrar aviso de CSS desativado
+  function showCssWarning() {
+    if (!document.getElementById('css-warning')) {
+      const warningDiv = document.createElement('div');
+      warningDiv.id = 'css-warning';
+      warningDiv.className = 'no-css-warning';
+      warningDiv.textContent = '⚠️ CSS DESABILITADO - Você está vendo apenas HTML puro! ⚠️';
+      document.body.insertBefore(warningDiv, document.body.firstChild);
     }
-}
+  }
 
-function convertToEmojis() {
+  // Remove aviso de CSS desativado
+  function removeCssWarning() {
+    const warning = document.getElementById('css-warning');
+    if (warning) warning.remove();
+  }
+
+  // Alterna ativação/desativação do CSS
+  function toggleCSS() {
+    cssEnabled = !cssEnabled;
+
+    if (cssEnabled) {
+      styleTag.disabled = false;
+
+      removeCssWarning();
+      // Reinicia animação CSS
+      document.body.classList.remove('css-activation');
+      void document.body.offsetWidth; // Força reflow para reiniciar animação
+      document.body.classList.add('css-activation');
+
+      toggleCssBtn.textContent = '🎨 Desativar CSS';
+      toggleCssBtn.title = 'Desativar estilo visual (CSS)';
+    } else {
+      styleTag.disabled = true;
+      showCssWarning();
+
+      toggleCssBtn.textContent = '🎨 Ativar CSS';
+      toggleCssBtn.title = 'Ativar estilo visual (CSS)';
+    }
+  }
+
+  // Converte itens da lista para emojis com animação
+  function convertToEmojis() {
+    if (isConverted) return;
+
     const items = document.querySelectorAll('li');
+    convertBtn.disabled = true;
 
     items.forEach((li, index) => {
-        setTimeout(() => {
-            li.classList.add('buying-animation');
+      setTimeout(() => {
+        li.classList.add('buying-animation');
 
-            setTimeout(() => {
-                const emoji = emojiMap[li.className.replace(' buying-animation', '')];
-                if (emoji) {
-                    li.textContent = emoji;
-                    li.classList.remove('buying-animation');
-                    li.classList.add('converted');
-                }
-            }, 600);
-        }, index * 200);
+        setTimeout(() => {
+          const className = li.className.split(' ')[0];
+          const emoji = emojiMap[className];
+          if (emoji) {
+            li.textContent = emoji;
+            li.classList.remove('buying-animation');
+            li.classList.add('converted');
+          }
+        }, 600);
+      }, index * 200);
     });
 
     setTimeout(() => {
-        document.getElementById('converteBtn').style.display = 'none';
-        document.getElementById('resetBtn').style.display = 'inline-block';
-        isConverted = true;
+      convertBtn.style.display = 'none';
+      resetBtn.style.display = 'inline-block';
+      isConverted = true;
     }, items.length * 200 + 600);
-}
+  }
 
-function resetToOriginal() {
+  // Restaura os itens para o texto original
+  function resetToOriginal() {
     const items = document.querySelectorAll('li');
+
     items.forEach(li => {
-        const originalText = li.getAttribute('data-original');
-        if (originalText) {
-            li.textContent = originalText;
-            li.classList.remove('converted', 'buying-animation');
-        }
+      const original = li.getAttribute('data-original');
+      if (original) {
+        li.textContent = original;
+        li.classList.remove('converted', 'buying-animation');
+      }
     });
 
-    document.getElementById('converteBtn').style.display = 'inline-block';
-    document.getElementById('resetBtn').style.display = 'none';
+    convertBtn.style.display = 'inline-block';
+    convertBtn.disabled = false;
+    resetBtn.style.display = 'none';
     isConverted = false;
-}
+  }
 
-// Eventos
-document.getElementById('toggleCssBtn').addEventListener('click', toggleCSS);
+  // Adiciona os event listeners para os botões
+  toggleCssBtn.addEventListener('click', toggleCSS);
+  convertBtn.addEventListener('click', convertToEmojis);
+  resetBtn.addEventListener('click', resetToOriginal);
+});
