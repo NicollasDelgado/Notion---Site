@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Referências aos elementos do DOM
-  const styleTag = document.getElementById('main-style');
+  const styleTag = document.getElementById('main-css'); // corrigido aqui
   const toggleCssBtn = document.getElementById('toggleCssBtn');
   const convertBtn = document.getElementById('converteBtn');
   const resetBtn = document.getElementById('resetBtn');
 
   // Função para mostrar aviso de CSS desativado
-  function showCssWarning() {
+  function cssdesabilitado() {
     if (!document.getElementById('css-warning')) {
       const warningDiv = document.createElement('div');
       warningDiv.id = 'css-warning';
@@ -45,11 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
       void document.body.offsetWidth; // Força reflow para reiniciar animação
       document.body.classList.add('css-activation');
 
-      toggleCssBtn.textContent = '🎨 Desativar CSS';
+      toggleCssBtn.textContent = '🚫 Desativar CSS';
       toggleCssBtn.title = 'Desativar estilo visual (CSS)';
     } else {
       styleTag.disabled = true;
-      showCssWarning();
+      cssdesabilitado();
 
       toggleCssBtn.textContent = '🎨 Ativar CSS';
       toggleCssBtn.title = 'Ativar estilo visual (CSS)';
