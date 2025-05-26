@@ -1,34 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Este é o Titulo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Quarto Virtual</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <h1>Este é o (h1), e imagine que este site seja seu quarto</h1>
-    <ul style="list-style-type: none;">
-        <li class="cama">
+    <h1>Este é o meu quarto virtual</h1>
+    <ul>
+        <li class="cama" data-original="cama (li)">
             cama (li)
         </li>
 
-        <li class="guarda-roupa">
+        <li class="guarda-roupa" data-original="guarda-roupa (li)">
             guarda-roupa (li)
         </li>
 
-        <li class="armario">
+        <li class="armario" data-original="armario (li)">
             armario (li)
         </li>
     </ul>
 
-    <!-- Botão para converter -->
-    <button id="converteBtn">Comprar</button>
+    <div class="controls">
+        <button id="toggleCssBtn">🎨 Desativar CSS</button>
+        <button id="converteBtn">🛒 Simular compra</button>
+        <button id="resetBtn" style="display: none;">↩️ Voltar ao original</button>
+    </div>
+
+    <div class="explanation">
+        <h2>💡 Explicação Educativa:</h2>
+        <p><strong>HTML:</strong> É a estrutura básica - como as paredes e divisões do seu quarto.</p>
+        <p><strong>CSS:</strong> É a decoração - cores, espaçamentos, sombras que deixam tudo bonito.</p>
+        <p><strong>JavaScript:</strong> É a funcionalidade - permite interação, como trocar o texto por emojis.</p>
+        <p><em>Teste desativar o CSS para ver como fica apenas com HTML!</em></p>
+    </div>
+
+    <script src="script.js"></script>
 </body>
-
-
-<script src="script.js"></script>
 
 </html>
